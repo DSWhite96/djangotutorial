@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 #Migrate command looks at these and creates database tables according to the apps that are present
 INSTALLED_APPS = [
+    "polls.apps.PollsConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
