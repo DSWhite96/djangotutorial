@@ -1,28 +1,30 @@
 #View = function or class that takes a web request and returns a web response
 #Basically a type of web page that serves a specific function
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.db.models import F
 from django.urls import reverse
+from django.views import generic
 
 from .models import Choice, Question
 
 # Create your views here.
-def index(request):
-    latest_question_list = Question.objects.order_by("-pub_date")[:5]
-    #Pass in variables as context for the template
-    context = {"latest_question_list": latest_question_list}
-    #Render the template and send it in the HTTP response
-    return render(request, "polls/index.html", context)
+class IndexView(generic.ListView):
+    template_name = "polls/index.html"
+    #If we didn't specify this, it would automatically call it question_list instead of latest_questions_list
+    context_object_name = "latest_questions_list"
+    #Returns the set of questions to the as_view() method call in urls.py
+    def get_queryset(self):
+        return Question.objects.order_by("-pub_date")[:5]
 
-def detail(request, question_id):
-    #Searches for an object, returns 404 if it doesn't exist
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/detail.html", {"question": question})
+class DetailView(generic.DetailView):
+    #Details are provided automatically because django knows what a DetailView is and knows what model it's operating on (Question in this case)
+    model = Question
+    template_name = "polls/detail.html"
 
-def results(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/results.html", {"question": question})
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = "polls/results.html"
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
