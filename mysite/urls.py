@@ -16,9 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from debug_toolbar.toolbar import debug_toolbar_urls
+from . import settings
 
 #Need to include the urls from your applications into the overall project URLconfig
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("polls/", include("polls.urls")) #URLConfig for Polls application
 ]
+
+if not settings.TESTING:
+    urlpatterns = [
+        *urlpatterns,
+    ] + debug_toolbar_urls()
