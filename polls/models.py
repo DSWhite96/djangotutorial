@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib import admin
 from django.db import models
 from django.utils import timezone
 """
@@ -18,6 +19,12 @@ class Question(models.Model):
         """
         return self.question_text
 
+    #Alters how the information from this method is displayed in the admin page
+    @admin.display(
+            boolean=True,
+            ordering="pub_date",
+            description="Published recently?"
+    )
     def was_published_recently(self):
         """
         Checks whether or not a question was published within the last day
